@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todolist</title>
+    <style>
+        :root {
+            --bg: #3C465C;
+            --primary: #78FFCD;
+            --solid: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--bg);
+            font-size: 20px;
+            font-family: 'Titillium Web', Arial, sans-serif;
+            color: var(--solid);
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 12px;
+            border: 1px solid var(--primary);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--solid);
+            font-size: 16px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: var(--primary);
+            color: var(--bg);
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(120, 255, 205, 0.4);
+        }
+
+        .note {
+            border: 1px solid var(--primary);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .note:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(120, 255, 205, 0.2);
+        }
+
+        .completed {
+            background-color: rgba(0, 0, 0, 0.2);
+            opacity: 0.7;
+        }
+
+        .recycle-bin {
+            margin-top: 30px;
+            border-top: 2px solid var(--primary);
+            padding-top: 20px;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 5px 0;
+        }
+
+        .buttons button {
+            background: rgba(120, 255, 205, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .buttons button:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+
+        <h1>Todolist</h1>
+        <button class="start-btn">
+            <span>开始使用</span>
+        </button>
+    </div>
+
+    <div class="app-container">
+        <div class="input-section">
+            <input type="text" id="titleInput" placeholder="标题">
+            <textarea id="contentInput" placeholder="内容" rows="3"></textarea>
+            <button onclick="addNote()">添加笔记</button>
+        </div>
+
+        <div class="actions">
+            <button onclick="markAllCompleted()">标记全部完成</button>
+            <button onclick="clearAll()">清除全部</button>
+        </div>
+
+        <div id="notesList"></div>
+
+        <div class="recycle-bin">
+            <h2>回收站</h2>
+            <div id="recycleBinList"></div>
+        </div>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('notes')) || [];
+
+        function saveNotes() {
+            localStorage.setItem('notes', JSON.stringify(notes));
+        }
+
+        function addNote() {
+            const titleInput = document.getElementById('titleInput');
+            const contentInput = document.getElementById('contentInput');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                alert('标题和内容不能为空！');
+                return;
+            }
+
+            const newNote = {
+                id: Date.now(),
+                title,
+                content,
+                createdAt: new Date().toISOString(),
+                isCompleted: false,
+                isDeleted: false
+            };
+
+            notes.unshift(newNote);
+            saveNotes();
+            renderNotes();
+            titleInput.value = '';
+            contentInput.value = '';
+        }
+
+        function deleteNote(id) {
+            const note = notes.find(note => note.id === id);
+            if (note) {
+                note.isDeleted = true;
+                saveNotes();
+                renderNotes();
+                renderRecycleBin();
+            }
+        }
+
+        function restoreNote(id) {
+            const note = notes.find(note => note.id === id);
+            if (note) {
+                note.isDeleted = false;
+                saveNotes();
+                renderNotes();
+                renderRecycleBin();
+            }
+        }
+
+        function editNote(id) {
+            const note = notes.find(note => note.id === id);
+            if (!note) return;
+
+            const newTitle = prompt('编辑标题：', note.title);
+            const newContent = prompt('编辑内容：', note.content);
+            if (newTitle !== null && newContent !== null) {
+                note.title = newTitle.trim();
+                note.content = newContent.trim();
+                saveNotes();
+                renderNotes();
+            }
+        }
+
+        function toggleComplete(id) {
+            const note = notes.find(note => note.id === id);
+            if (note) {
+                note.isCompleted = !note.isCompleted;
+                saveNotes();
+                renderNotes();
+            }
+        }
+
+        function markAllCompleted() {
+            notes.forEach(note => {
+                if (!note.isDeleted) {
+                    note.isCompleted = true;
+                }
+            });
+            saveNotes();
+            renderNotes();
+        }
+
+        function clearAll() {
+            const confirmClear = confirm('确定要清除所有笔记到回收站吗？');
+            if (confirmClear) {
+                notes.forEach(note => {
+                    if (!note.isDeleted) {
+                        note.isDeleted = true;
+                    }
+                });
+                saveNotes();
+                renderNotes();
+                renderRecycleBin();
+            }
+        }
+
+        function renderNotes() {
+            const notesList = document.getElementById('notesList');
+            const filteredNotes = notes.filter(note => !note.isDeleted);
+            notesList.innerHTML = filteredNotes.map(note => `
+                <div class="note ${note.isCompleted ? 'completed' : ''}" data-id="${note.id}">
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <div class="timestamp">创建时间：${new Date(note.createdAt).toLocaleString()}</div>
+                    <div class="buttons">
+                        <button onclick="toggleComplete(${note.id})">${note.isCompleted ? '取消完成' : '标记完成'}</button>
+                        <button onclick="editNote(${note.id})">编辑</button>
+                        <button onclick="deleteNote(${note.id})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecycleBin() {
+            const recycleBinList = document.getElementById('recycleBinList');
+            const deletedNotes = notes.filter(note => note.isDeleted);
+            recycleBinList.innerHTML = deletedNotes.map(note => `
+                <div class="note" data-id="${note.id}">
+                    <h3>${note.title}</h3>
+                    <p>${note.content}</p>
+                    <div class="timestamp">创建时间：${new Date(note.createdAt).toLocaleString()}</div>
+                    <div class="buttons">
+                        <button onclick="restoreNote(${note.id})">恢复</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 初始化渲染
+        renderNotes();
+        renderRecycleBin();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 模型工作台</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <img src="绿舟.png" alt="绿舟图标" class="logo">
+    <!-- 模型库 -->
+    <div class="model-library">
+        <h2>模型库</h2>
+        <div class="form-panel">
+            <h3>上传新模型</h3>
+            <div class="form-group">
+                <label for="newModelName">模型名称</label>
+                <input type="text" id="newModelName" placeholder="例如：GPT-4" title="请输入模型名称">
+            </div>
+            <div class="form-group">
+                <label for="newModelUrl">模型URL</label>
+                <input type="text" id="newModelUrl" placeholder="例如：https://api.example.com" title="请输入模型访问地址">
+            </div>
+            <div class="form-group">
+                <label for="newModelDesc">模型描述</label>
+                <textarea id="newModelDesc" placeholder="描述模型的功能和特点..." title="模型描述"></textarea>
+            </div>
+            <button onclick="uploadModel()">上传模型</button>
+        </div>
+        <div class="model-list">
+            <div class="model-item draggable" data-name="OpenAI" data-url="https://chat.openai.com/"
+                data-desc="由OpenAI开发，以强大自然语言处理能力著称，支持多任务处理，广泛应用于对话、创作和代码生成，代表作为GPT系列模型"
+                title="由OpenAI开发，以强大自然语言处理能力著称，支持多任务处理，广泛应用于对话、创作和代码生成，代表作为GPT系列模型">
+                OpenAI
+            </div>
+            <div class="model-item draggable" data-name="DeepSeek" data-url="https://chat.deepseek.com/"
+                data-desc="深度求索公司推出的开源大模型，专注高效推理与长文本处理，支持128K上下文，适合代码、数学及复杂逻辑任务"
+                title="深度求索公司推出的开源大模型，专注高效推理与长文本处理，支持128K上下文，适合代码、数学及复杂逻辑任务">
+                DeepSeek
+            </div>
+            <div class="model-item draggable" data-name="腾讯元宝" data-url="https://yuanbao.tencent.com/"
+                data-desc="腾讯推出的企业级大模型，强调安全与落地应用，支持多模态交互，适用于金融、医疗行業场景优化"
+                title="腾讯推出的企业级大模型，强调安全与落地应用，支持多模态交互，适用于金融、医疗行業场景优化">
+                腾讯元宝
+            </div>
+        </div>
+    </div>
+    <!-- 工作台 -->
+    <div class="workbench">
+        <div class="layers" id="layers"></div>
+        <div id="modelConfigModal" class="modal" style="display: none;">
+            <div id="modalContent"></div>
+        </div>
+        <div id="modalBackdrop" class="modal-backdrop" style="display: none;"></div>
+        <div id="uploadModal" class="modal" style="display: none;">
+            <div class="upload-modal">
+                <h2>运行项目</h2>
+                <div class="form-panel">
+                    <div class="server-select">
+                        <button type="button" class="server-option selected" onclick="selectServer(this, 'server1')"
+                            aria-label="智能选择服务器">
+                            智能选择
+                        </button>
+                        <button type="button" class="server-option selected" onclick="selectServer(this, 'server2')"
+                            aria-label="服务器1">
+                            服务器1
+                        </button>
+                        <button type="button" class="server-option selected" onclick="selectServer(this, 'auto')"
+                            aria-label="服务器2">
+                            服务器2
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectName">项目名称</label>
+                        <input type="text" id="projectName" placeholder="例如：AI图像识别系统" title="项目名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">项目描述</label>
+                        <textarea id="projectDescription" placeholder="详细描述项目用途..." title="项目描述" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectImage">上传图片</label>
+                        <input type="file" id="projectImage" accept="image/*" title="上传项目图片"
+                            onchange="previewProjectImage()">
+                        <img id="imagePreview" class="preview-image" alt="图片预览">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="button" onclick="closeUploadModal()" aria-label="取消上传">取消</button>
+                        <button type="submit" onclick="submitProject()" aria-label="提交项目">运行</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <button type="button" onclick="showUploadModal()" aria-label="上传项目">上传项目</button>
+            <button type="button" onclick="addLayer()" aria-label="添加层级">+ 添加层级</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

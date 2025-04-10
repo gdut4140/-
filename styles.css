@@ -1,0 +1,311 @@
+:root {
+    --bg: #2c3341;
+    --primary: #78FFCD;
+    --border: #4a5468;
+    --hover-bg: rgba(120, 255, 205, 0.1);
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: white;
+    font-family: Arial, sans-serif;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 新增图标样式 */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+    width: 75px;
+    height: auto;
+}
+
+/* 模型库样式 */
+.model-library {
+    border-right: 2px solid var(--primary);
+    padding-right: 20px;
+    animation: fadeInLeft 0.5s ease;
+}
+
+.model-item {
+    border: 2px solid var(--primary);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    cursor: move;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.model-item:hover {
+    background: var(--hover-bg);
+    transform: scale(1.05);
+}
+
+/* 工作台样式 */
+.workbench {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    animation: fadeInRight 0.5s ease;
+}
+
+.layers {
+    display: flex;
+    gap: 20px;
+    min-height: 300px;
+}
+
+.layer {
+    min-width: 250px;
+    min-height: 300px;
+    border: 2px dashed var(--primary);
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.layer:hover {
+    transform: scale(1.02);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+button[type="button"] {
+    background: transparent;
+    border: 2px solid var(--primary);
+    border-radius: 5px;
+    padding: 8px 15px;
+    transition: all 0.3s;
+}
+
+button[type="button"]:hover {
+    background: var(--hover-bg);
+}
+
+.layer.drop-target {
+    border-color: #78FFCD;
+    background: rgba(120, 255, 205, 0.05);
+    box-shadow: 0 0 15px rgba(120, 255, 205, 0.3);
+}
+
+/* 修改模型卡片样式 */
+.model-card {
+    background: rgba(120, 255, 205, 0.1);
+    padding: 10px 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: transform 0.2s;
+    border: 1px solid var(--primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    padding-right: 40px;
+}
+
+.model-card>span {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.model-card>button {
+    position: absolute;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 70%;
+    border: 1px solid #78FFCD;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.model-card:hover {
+    transform: scale(1.05);
+}
+
+.model-card>button:hover {
+    background: rgba(255, 99, 71, 0.4);
+    transform: scale(1.1);
+}
+
+/* 表单样式 */
+.form-panel {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+input,
+textarea,
+button,
+select {
+    border: 2px solid var(--primary);
+    background: transparent;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background: var(--hover-bg);
+}
+
+/* 模态框样式 */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    padding: 20px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    z-index: 1000;
+    min-width: 300px;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    animation: fadeIn 0.3s ease;
+}
+
+.layer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* 新增上传弹窗样式 */
+.upload-modal {
+    width: 500px;
+    background: var(--bg);
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.server-select {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.server-option {
+    padding: 8px 15px;
+    border: 2px solid var(--primary);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.server-option.selected {
+    background: rgba(120, 255, 205, 0.2);
+}
+
+.preview-image {
+    max-width: 200px;
+    margin-top: 10px;
+    display: none;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.model-item.dragging {
+    opacity: 0.5;
+    transform: scale(1.05);
+}
+
+/* 动画效果 */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
